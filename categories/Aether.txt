@@ -1,4 +1,2 @@
-https://graphing-calculator.s3.amazonaws.com/study.html
-https://aether-schools.s3.amazonaws.com/study.html
 https://cdn.jsdelivr.net/gh/AetherGamesOfficial/AetherEducationStatic@26b0f7c/index.svg
 https://cdn.jsdelivr.net/gh/AetherGamesOfficial/sldjlsjflskj@main/studyhub.svg
