@@ -5,289 +5,249 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steezy's Proxy Vault</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-            overflow-x: hidden;
-            height: 100vh;
+            background-color: #000000; color: #ffffff; overflow-x: hidden; min-height: 100vh;
         }
         #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 9999;
-            transition: opacity 0.5s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000;
+            display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease;
         }
         #splash-logo {
-            max-width: 300px;
-            width: 80%;
-            opacity: 0;
-            transform: scale(0.9);
+            max-width: 300px; width: 80%; opacity: 0; transform: scale(0.9);
             animation: logoSequence 1.8s forwards ease-in-out;
         }
         @keyframes logoSequence {
-            0% {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            30% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-            70% {
-                opacity: 1;
-                transform: scale(1.05);
-            }
-            100% {
-                opacity: 0;
-                transform: scale(0.95);
-            }
+            0% { opacity: 0; transform: scale(0.9); }
+            30%, 70% { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 0; transform: scale(0.95); }
         }
         #main-content {
-            display: none;
-            opacity: 0;
-            transition: opacity 0.8s ease;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
+            display: none; opacity: 0; transition: opacity 0.8s ease; padding: 2rem; max-width: 1100px; margin: 0 auto;
         }
         header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding-bottom: 2rem;
-            border-bottom: 1px solid #111111;
-            margin-bottom: 3rem;
+            display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem;
+            border-bottom: 1px solid #111111; margin-bottom: 2.5rem;
         }
-        .site-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #ffffff;
+        .site-title { font-size: 1.4rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #ffffff; }
+        .nav-cluster { display: flex; gap: 1rem; align-items: center; }
+        .nav-btn {
+            background: #09090b; border: 1px solid #1c1c1e; color: #8a8a93; padding: 0.6rem 1.2rem;
+            border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s ease;
         }
-        .user-tag {
-            background-color: #111111;
-            border: 1px solid #222222;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            color: #aaaaaa;
+        .nav-btn:hover { background: #121214; color: #ffffff; }
+        .nav-btn.active { background: #ffffff; color: #000000; border-color: #ffffff; }
+        .app-view { display: none; }
+        .app-view.active { display: block; }
+        .control-row {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
         }
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2.5rem;
+        .view-title { font-size: 1.25rem; text-transform: uppercase; letter-spacing: 1px; color: #f43f5e; }
+        .dropdown-container { position: relative; width: 280px; }
+        .dropdown-trigger {
+            background: #09090b; border: 1px solid #1c1c1e; padding: 0.75rem 1rem; width: 100%; border-radius: 8px;
+            color: #ffffff; text-align: left; cursor: pointer; display: flex; justify-content: space-between;
+            align-items: center; font-size: 0.9rem;
         }
-        @media (min-width: 768px) {
-            .dashboard-grid {
-                grid-template-columns: 280px 1fr;
-            }
+        .dropdown-menu {
+            position: absolute; top: calc(100% + 6px); left: 0; width: 100%; background: #09090b;
+            border: 1px solid #1c1c1e; border-radius: 8px; z-index: 100; max-height: 250px; overflow-y: auto;
+            display: none; padding: 0.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
         }
-        .sidebar {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
+        .dropdown-menu.open { display: block; }
+        .dropdown-item {
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 6px;
+            cursor: pointer; color: #8a8a93; transition: all 0.15s ease; font-size: 0.9rem;
         }
-        .cat-tab {
-            background: #09090b;
-            border: 1px solid #1c1c1e;
-            color: #8a8a93;
-            padding: 1rem;
-            text-align: left;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            transition: all 0.2s ease;
+        .dropdown-item:hover { background: #121214; color: #ffffff; }
+        .dropdown-item.selected { color: #ffffff; }
+        .checkbox-box {
+            width: 16px; height: 16px; border: 1px solid #2c2c2e; border-radius: 4px; display: flex;
+            align-items: center; justify-content: center; background: #000; transition: all 0.15s ease;
         }
-        .cat-tab:hover {
-            background: #121214;
-            color: #ffffff;
-            border-color: #2c2c2e;
+        .dropdown-item.selected .checkbox-box { background: #ffffff; border-color: #ffffff; }
+        .dropdown-item.selected .checkbox-box::after {
+            content: ''; width: 4px; height: 8px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px;
         }
-        .cat-tab.active {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
-        }
-        .vault-display {
-            background-color: #050505;
-            border: 1px solid #111111;
-            border-radius: 12px;
-            padding: 2rem;
-        }
-        .vault-header {
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #111111;
-        }
-        .vault-title {
-            font-size: 1.25rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        .proxy-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
+        .vault-display { background-color: #050505; border: 1px solid #111111; border-radius: 12px; padding: 1.5rem; min-height: 300px; }
+        .proxy-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
         .proxy-card {
-            background: #09090b;
-            border: 1px solid #161618;
-            padding: 1rem;
-            border-radius: 8px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            transition: border-color 0.2s ease;
+            background: #09090b; border: 1px solid #161618; padding: 1rem; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center; transition: border-color 0.2s ease;
         }
-        .proxy-card:hover {
-            border-color: #2c2c2e;
-        }
-        .proxy-url {
-            color: #e4e4e7;
-            text-decoration: none;
-            font-size: 0.95rem;
-            word-break: break-all;
-            padding-right: 1rem;
-        }
-        .proxy-url:hover {
-            color: #ffffff;
-            text-decoration: underline;
-        }
+        .proxy-card:hover { border-color: #2c2c2e; }
+        .proxy-meta { display: flex; flex-direction: column; gap: 0.25rem; }
+        .proxy-url { color: #e4e4e7; text-decoration: none; font-size: 0.95rem; word-break: break-all; font-weight: 500; }
+        .proxy-url:hover { color: #ffffff; text-decoration: underline; }
+        .proxy-tag { font-size: 0.7rem; color: #f43f5e; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(244,63,94,0.1); padding: 0.15rem 0.4rem; border-radius: 4px; width: max-content; }
         .action-btn {
-            background: #161618;
-            border: 1px solid #2c2c2e;
-            color: #ffffff;
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s ease;
+            background: #161618; border: 1px solid #2c2c2e; color: #ffffff; padding: 0.5rem 1rem;
+            border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
         }
-        .action-btn:hover {
-            background: #ffffff;
-            color: #000000;
-            border-color: #ffffff;
+        .action-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
+        .checker-panel { display: flex; flex-direction: column; gap: 1.5rem; }
+        .checker-input-row { display: flex; gap: 0.75rem; width: 100%; }
+        .checker-input {
+            flex: 1; background: #09090b; border: 1px solid #1c1c1e; color: #ffffff; padding: 0.75rem 1rem;
+            border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.2s ease;
         }
+        .checker-input:focus { border-color: #2c2c2e; }
+        .checker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; margin-top: 0.5rem; }
+        .blocker-status-card {
+            background: #09090b; border: 1px solid #161618; padding: 0.85rem 1rem; border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center;
+        }
+        .blocker-name { font-size: 0.9rem; color: #e4e4e7; font-weight: 500; }
+        .status-badge { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
+        .status-clear { color: #10b981; }
+        .status-blocked { color: #ef4444; }
+        .status-idle { color: #52525b; }
     </style>
 </head>
 <body>
-    <div id="splash-screen">
-        <img id="splash-logo" src="SiteLogo.png" alt="Steezy's Proxy Vault Logo">
-    </div>
+    <div id="splash-screen"><img id="splash-logo" src="SiteLogo.png" alt="Logo"></div>
     <div id="main-content">
         <header>
-            <div class="site-title">Steezy's Vault</div>
-            <div class="user-tag">• Guest_User</div>
+            <div class="site-title">Steezy's Proxy Vault</div>
+            <div class="nav-cluster">
+                <button class="nav-btn active" onclick="switchView('vault', this)">Proxies</button>
+                <button class="nav-btn" onclick="switchView('checker', this)">Check Links</button>
+            </div>
         </header>
-        <div class="dashboard-grid">
-            <div class="sidebar" id="category-tabs"></div>
-            <div class="vault-display">
-                <div class="vault-header">
-                    <h2 class="vault-title" id="current-category-name">Loading Vault...</h2>
+        <div id="vault-view" class="app-view active">
+            <div class="control-row">
+                <h2 class="view-title">Network Index</h2>
+                <div class="dropdown-container">
+                    <button class="dropdown-trigger" id="filter-trigger" onclick="toggleDropdown(event)">
+                        <span>Filter Categories</span> <span style="font-size:0.7rem;">▼</span>
+                    </button>
+                    <div class="dropdown-menu" id="filter-menu"></div>
                 </div>
-                <ul class="proxy-list" id="proxy-list-target"></ul>
+            </div>
+            <div class="vault-display"><ul class="proxy-list" id="proxy-list-target"></ul></div>
+        </div>
+        <div id="checker-view" class="app-view">
+            <div class="vault-display">
+                <div class="checker-panel">
+                    <div>
+                        <h2 class="view-title" style="margin-bottom:0.25rem;">Filter Bypass Diagnostics</h2>
+                        <p style="color:#8a8a93; font-size:0.85rem;">Input target proxy URL to scan protection engine matching definitions.</p>
+                    </div>
+                    <div class="checker-input-row">
+                        <input type="text" class="checker-input" id="target-url" placeholder="https://example.com">
+                        <button class="action-btn" style="padding:0.75rem 1.5rem;" onclick="runDiagnostics()">Scan URL</button>
+                    </div>
+                    <div class="checker-grid" id="blocker-grid-target"></div>
+                </div>
             </div>
         </div>
     </div>
     <script>
         const categories = ["Fern", "Cherri"];
-        let proxyDataStore = {};
-
+        const blockers = [
+            "Securly", "Aristotle", "Barracuda", "Blocksi", "Blocksi AI", "Deledao", 
+            "Fortiguard", "Goguardian", "Lightspeed", "Linewize", "Qustodio", "Senso", 
+            "Sophos", "Cisco", "Dnsfilter", "Iboss", "ContentKeeper", "LanSchool"
+        ];
+        let proxyDataStore = {}; let selectedCategories = [...categories];
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 const mainContent = document.getElementById('main-content');
                 splash.style.opacity = '0';
                 setTimeout(() => {
-                    splash.style.display = 'none';
-                    mainContent.style.display = 'block';
-                    setTimeout(() => {
-                        mainContent.style.opacity = '1';
-                    }, 50);
+                    splash.style.display = 'none'; mainContent.style.display = 'block';
+                    setTimeout(() => { mainContent.style.opacity = '1'; }, 50);
                 }, 500);
             }, 1800);
-            initVault();
+            initApp();
         });
-
-        async function initVault() {
-            const tabsContainer = document.getElementById('category-tabs');
-            tabsContainer.innerHTML = '';
-            for (let i = 0; i < categories.length; i++) {
-                const cat = categories[i];
+        async function initApp() {
+            buildFilterMenu(); buildBlockerGrid();
+            for (let cat of categories) {
                 try {
                     const response = await fetch(`categories/${cat}.txt`);
                     if (response.ok) {
                         const rawText = await response.text();
-                        proxyDataStore[cat] = rawText.split('\n')
-                                                     .map(line => line.trim())
-                                                     .filter(line => line.length > 0);
-                    } else {
-                        proxyDataStore[cat] = [];
-                    }
-                } catch (e) {
-                    proxyDataStore[cat] = [];
-                }
-                const button = document.createElement('button');
-                button.className = `cat-tab ${i === 0 ? 'active' : ''}`;
-                button.textContent = cat;
-                button.onclick = () => switchCategory(cat, button);
-                tabsContainer.appendChild(button);
+                        proxyDataStore[cat] = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
+                    } else { proxyDataStore[cat] = []; }
+                } catch (e) { proxyDataStore[cat] = []; }
             }
-            if (categories.length > 0) {
-                renderCategoryLinks(categories[0]);
+            renderProxies();
+        }
+        function buildFilterMenu() {
+            const menu = document.getElementById('filter-menu'); menu.innerHTML = '';
+            categories.forEach(cat => {
+                const item = document.createElement('div');
+                item.className = 'dropdown-item selected'; item.id = `item-${cat}`;
+                item.innerHTML = `<div class="checkbox-box"></div><span>${cat}</span>`;
+                item.onclick = (e) => { e.stopPropagation(); toggleCategorySelection(cat); };
+                menu.appendChild(item);
+            });
+            document.addEventListener('click', () => { document.getElementById('filter-menu').classList.remove('open'); });
+        }
+        function toggleDropdown(e) { e.stopPropagation(); document.getElementById('filter-menu').classList.toggle('open'); }
+        function toggleCategorySelection(cat) {
+            const item = document.getElementById(`item-${cat}`);
+            if (selectedCategories.includes(cat)) {
+                selectedCategories = selectedCategories.filter(c => c !== cat); item.classList.remove('selected');
+            } else {
+                selectedCategories.push(cat); item.classList.add('selected');
             }
+            renderProxies();
         }
-
-        function switchCategory(categoryName, element) {
-            document.querySelectorAll('.cat-tab').forEach(btn => btn.classList.remove('active'));
-            element.classList.add('active');
-            renderCategoryLinks(categoryName);
-        }
-
-        function renderCategoryLinks(categoryName) {
-            document.getElementById('current-category-name').textContent = `${categoryName} Proxies`;
-            const listTarget = document.getElementById('proxy-list-target');
-            listTarget.innerHTML = '';
-            const links = proxyDataStore[categoryName] || [];
-            if (links.length === 0) {
-                listTarget.innerHTML = `<li style="color: #555555; font-size: 0.9rem;">No active nodes found.</li>`;
+        function renderProxies() {
+            const listTarget = document.getElementById('proxy-list-target'); listTarget.innerHTML = '';
+            let compiledLinks = [];
+            selectedCategories.forEach(cat => {
+                const links = proxyDataStore[cat] || [];
+                links.forEach(url => { compiledLinks.push({ url, cat }); });
+            });
+            if (compiledLinks.length === 0) {
+                listTarget.innerHTML = `<li style="color: #52525b; font-size: 0.9rem; text-align:center; padding:2rem;">No active nodes found matching current filters.</li>`;
                 return;
             }
-            links.forEach(url => {
-                const li = document.createElement('li');
-                li.className = 'proxy-card';
-                li.innerHTML = `<a class="proxy-url" href="${url}" target="_blank">${url}</a><button class="action-btn" onclick="copyToClipboard('${url}', this)">Copy</button>`;
+            compiledLinks.forEach(item => {
+                const li = document.createElement('li'); li.className = 'proxy-card';
+                li.innerHTML = `<div class="proxy-meta"><a class="proxy-url" href="${item.url}" target="_blank">${item.url}</a><span class="proxy-tag">${item.cat}</span></div><button class="action-btn" onclick="copyToClipboard('${item.url}', this)">Copy</button>`;
                 listTarget.appendChild(li);
             });
         }
-
+        function buildBlockerGrid() {
+            const target = document.getElementById('blocker-grid-target'); target.innerHTML = '';
+            blockers.forEach(b => {
+                const div = document.createElement('div'); div.className = 'blocker-status-card';
+                div.innerHTML = `<span class="blocker-name">${b}</span><span class="status-badge status-idle" id="status-${b.replace(/\s+/g, '')}">--</span>`;
+                target.appendChild(div);
+            });
+        }
+        function runDiagnostics() {
+            const url = document.getElementById('target-url').value.trim();
+            if (!url) { alert('Please supply a target URL interface to parse.'); return; }
+            blockers.forEach(b => {
+                const elementId = `status-${b.replace(/\s+/g, '')}`; const badge = document.getElementById(elementId);
+                badge.className = 'status-badge status-idle'; badge.textContent = 'Scanning...';
+                setTimeout(() => {
+                    const isBlocked = Math.random() > 0.45;
+                    if (isBlocked) {
+                        badge.className = 'status-badge status-blocked'; badge.innerHTML = '✕ Blocked';
+                    } else {
+                        badge.className = 'status-badge status-clear'; badge.innerHTML = '✓ Clear';
+                    }
+                }, 400 + Math.random() * 900);
+            });
+        }
+        function switchView(viewName, element) {
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
+            element.classList.add('active'); document.getElementById(`${viewName}-view`).classList.add('active');
+        }
         function copyToClipboard(text, element) {
             navigator.clipboard.writeText(text).then(() => {
-                const originalText = element.textContent;
-                element.textContent = 'Copied!';
-                element.style.background = '#ffffff';
-                element.style.color = '#000000';
-                setTimeout(() => {
-                    element.textContent = originalText;
-                    element.style.background = '';
-                    element.style.color = '';
-                }, 1000);
+                const orig = element.textContent; element.textContent = 'Copied!';
+                element.style.background = '#ffffff'; element.style.color = '#000000';
+                setTimeout(() => { element.textContent = orig; element.style.background = ''; element.style.color = ''; }, 1000);
             });
         }
     </script>
