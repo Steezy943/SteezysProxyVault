@@ -38,7 +38,7 @@
         }
         .nav-btn:hover { background: #121214; color: #ffffff; }
         .nav-btn.active { background: #ffffff; color: #000000; border-color: #ffffff; }
-        .app-view { display: none; }
+        .app-view { display: none; position: relative; }
         .app-view.active { display: block; }
         .control-row {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
@@ -103,6 +103,20 @@
         .status-clear { color: #10b981; }
         .status-blocked { color: #ef4444; }
         .status-idle { color: #52525b; }
+        .blur-overlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; border-radius: 12px; z-index: 10;
+        }
+        .coming-soon-badge {
+            background: #111111; border: 1px solid #222222; padding: 1rem 2.5rem; border-radius: 12px;
+            color: #ffffff; font-size: 1.5rem; font-weight: 700; text-transform: uppercase;
+            letter-spacing: 3px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); animation: pulseText 2s infinite ease-in-out;
+        }
+        @keyframes pulseText {
+            0%, 100% { opacity: 0.7; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+        }
     </style>
 </head>
 <body>
@@ -128,6 +142,7 @@
             <div class="vault-display"><ul class="proxy-list" id="proxy-list-target"></ul></div>
         </div>
         <div id="checker-view" class="app-view">
+            <div class="blur-overlay"><div class="coming-soon-badge">Coming Soon</div></div>
             <div class="vault-display">
                 <div class="checker-panel">
                     <div>
@@ -144,29 +159,25 @@
         </div>
     </div>
     <script>
-        let categories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Tundra"];
+        let categories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Truffled", "Tundra"];
         const blockers = [
             "Securly", "Aristotle", "Barracuda", "Blocksi", "Blocksi AI", "Deledao", 
             "Fortiguard", "Goguardian", "Lightspeed", "Linewize", "Qustodio", "Senso", 
             "Sophos", "Cisco", "Dnsfilter", "Iboss", "ContentKeeper", "LanSchool"
         ];
-        let proxyDataStore = {}; 
-        let selectedCategories = [];
-        
+        let proxyDataStore = {}; let selectedCategories =;
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 const mainContent = document.getElementById('main-content');
                 splash.style.opacity = '0';
                 setTimeout(() => {
-                    splash.style.display = 'none'; 
-                    mainContent.style.display = 'block';
+                    splash.style.display = 'none'; mainContent.style.display = 'block';
                     setTimeout(() => { mainContent.style.opacity = '1'; }, 50);
                 }, 500);
             }, 1800);
             initApp();
         });
-
         async function fetchCategoriesFromGitHub() {
             try {
                 const hostname = window.location.hostname;
@@ -174,8 +185,7 @@
                 if (hostname.includes('github.io')) {
                     const parts = pathname.split('/').filter(Boolean);
                     if (parts.length > 0) {
-                        const username = hostname.split('.')[0];
-                        const repo = parts[0];
+                        const username = hostname.split('.'); const repo = parts;
                         const response = await fetch(`https://github.com{username}/${repo}/contents/categories`);
                         if (response.ok) {
                             const files = await response.json();
@@ -197,8 +207,8 @@
                     if (response.ok) {
                         const rawText = await response.text();
                         proxyDataStore[cat] = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-                    } else { proxyDataStore[cat] = []; }
-                } catch (e) { proxyDataStore[cat] = []; }
+                    } else { proxyDataStore[cat] =; }
+                } catch (e) { proxyDataStore[cat] =; }
             }
             renderProxies();
         }
@@ -225,9 +235,9 @@
         }
         function renderProxies() {
             const listTarget = document.getElementById('proxy-list-target'); listTarget.innerHTML = '';
-            let compiledLinks = [];
+            let compiledLinks =;
             selectedCategories.forEach(cat => {
-                const links = proxyDataStore[cat] || [];
+                const links = proxyDataStore[cat] ||;
                 links.forEach(url => { compiledLinks.push({ url, cat }); });
             });
             if (compiledLinks.length === 0) {
