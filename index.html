@@ -144,13 +144,13 @@
         </div>
     </div>
     <script>
-        const categories = ["Fern", "Cherri"];
+        let categories = [];
         const blockers = [
             "Securly", "Aristotle", "Barracuda", "Blocksi", "Blocksi AI", "Deledao", 
             "Fortiguard", "Goguardian", "Lightspeed", "Linewize", "Qustodio", "Senso", 
             "Sophos", "Cisco", "Dnsfilter", "Iboss", "ContentKeeper", "LanSchool"
         ];
-        let proxyDataStore = {}; let selectedCategories = [...categories];
+        let proxyDataStore = {}; let selectedCategories = [];
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -163,7 +163,27 @@
             }, 1800);
             initApp();
         });
+        async function fetchCategoriesFromGitHub() {
+            try {
+                const hostname = window.location.hostname;
+                const pathname = window.location.pathname;
+                if (hostname.includes('github.io')) {
+                    const username = hostname.split('.')[0];
+                    const repo = pathname.split('/').filter(Boolean)[0] || '';
+                    if (username && repo) {
+                        const response = await fetch(`https://github.com{username}/${repo}/contents/categories`);
+                        if (response.ok) {
+                            const files = await response.json();
+                            return files.filter(f => f.name.endsWith('.txt')).map(f => f.name.replace('.txt', ''));
+                        }
+                    }
+                }
+            } catch (e) { console.error("Error auto-fetching folder contents:", e); }
+            return ["Fern", "Cherri"];
+        }
         async function initApp() {
+            categories = await fetchCategoriesFromGitHub();
+            selectedCategories = [...categories];
             buildFilterMenu(); buildBlockerGrid();
             for (let cat of categories) {
                 try {
@@ -226,42 +246,21 @@
             let url = document.getElementById('target-url').value.trim();
             if (!url) { alert('Please supply a target URL interface to parse.'); return; }
             if (!/^https?:\/\//i.test(url)) { url = 'https://' + url; }
-            
             blockers.forEach(b => {
-                const elementId = `status-${b.replace(/\s+/g, '')}`;
-                const badge = document.getElementById(elementId);
-                badge.className = 'status-badge status-idle';
-                badge.textContent = 'Testing...';
+                const elementId = `status-${b.replace(/\s+/g, '')}`; const badge = document.getElementById(elementId);
+                badge.className = 'status-badge status-idle'; badge.textContent = 'Testing...';
             });
-
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 4500);
-
+            const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 4500);
             try {
-                const response = await fetch(url, { 
-                    method: 'HEAD', 
-                    mode: 'no-cors', 
-                    signal: controller.signal,
-                    cache: 'no-store'
-                });
-                clearTimeout(timeoutId);
-                updateAllBlockers(false);
-            } catch (err) {
-                clearTimeout(timeoutId);
-                updateAllBlockers(true);
-            }
+                await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal, cache: 'no-store' });
+                clearTimeout(timeoutId); updateAllBlockers(false);
+            } catch (err) { clearTimeout(timeoutId); updateAllBlockers(true); }
         }
         function updateAllBlockers(isRequestBlocked) {
             blockers.forEach(b => {
-                const elementId = `status-${b.replace(/\s+/g, '')}`;
-                const badge = document.getElementById(elementId);
-                if (isRequestBlocked) {
-                    badge.className = 'status-badge status-blocked';
-                    badge.innerHTML = '✕ Blocked';
-                } else {
-                    badge.className = 'status-badge status-clear';
-                    badge.innerHTML = '✓ Clear';
-                }
+                const elementId = `status-${b.replace(/\s+/g, '')}`; const badge = document.getElementById(elementId);
+                if (isRequestBlocked) { badge.className = 'status-badge status-blocked'; badge.innerHTML = '✕ Blocked'; }
+                else { badge.className = 'status-badge status-clear'; badge.innerHTML = '✓ Clear'; }
             });
         }
         function switchView(viewName, element) {
