@@ -144,7 +144,6 @@
         </div>
     </div>
     <script>
-        // Pre-loaded from your categories folder layout
         let categories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Tundra"];
         const blockers = [
             "Securly", "Aristotle", "Barracuda", "Blocksi", "Blocksi AI", "Deledao", 
@@ -180,7 +179,7 @@
                     }
                 }
             } catch (e) { console.error("Error auto-fetching folder contents:", e); }
-            return categories; // Fallback to hardcoded array if API or local environment limits it
+            return categories;
         }
         async function initApp() {
             const fetched = await fetchCategoriesFromGitHub();
@@ -193,8 +192,8 @@
                     if (response.ok) {
                         const rawText = await response.text();
                         proxyDataStore[cat] = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-                    } else { proxyDataStore[cat] = []; }
-                } catch (e) { proxyDataStore[cat] = []; }
+                    } else { proxyDataStore[cat] =; }
+                } catch (e) { proxyDataStore[cat] =; }
             }
             renderProxies();
         }
@@ -221,9 +220,9 @@
         }
         function renderProxies() {
             const listTarget = document.getElementById('proxy-list-target'); listTarget.innerHTML = '';
-            let compiledLinks = [];
+            let compiledLinks =;
             selectedCategories.forEach(cat => {
-                const links = proxyDataStore[cat] || [];
+                const links = proxyDataStore[cat] ||;
                 links.forEach(url => { compiledLinks.push({ url, cat }); });
             });
             if (compiledLinks.length === 0) {
