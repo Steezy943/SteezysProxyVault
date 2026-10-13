@@ -144,13 +144,14 @@
         </div>
     </div>
     <script>
-        let categories = [];
+        // Pre-loaded from your categories folder layout
+        let categories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Tundra"];
         const blockers = [
             "Securly", "Aristotle", "Barracuda", "Blocksi", "Blocksi AI", "Deledao", 
             "Fortiguard", "Goguardian", "Lightspeed", "Linewize", "Qustodio", "Senso", 
             "Sophos", "Cisco", "Dnsfilter", "Iboss", "ContentKeeper", "LanSchool"
         ];
-        let proxyDataStore = {}; let selectedCategories = [];
+        let proxyDataStore = {}; let selectedCategories =;
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -179,10 +180,11 @@
                     }
                 }
             } catch (e) { console.error("Error auto-fetching folder contents:", e); }
-            return ["Fern", "Cherri"];
+            return categories; // Fallback to hardcoded array if API or local environment limits it
         }
         async function initApp() {
-            categories = await fetchCategoriesFromGitHub();
+            const fetched = await fetchCategoriesFromGitHub();
+            if (fetched && fetched.length > 0) { categories = fetched; }
             selectedCategories = [...categories];
             buildFilterMenu(); buildBlockerGrid();
             for (let cat of categories) {
