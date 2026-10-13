@@ -1,1 +1,4 @@
-
+https://bull-best.s3.amazonaws.com/index.html
+https://bull-best.s3.us-east-1.amazonaws.com/index.html
+https://frnbk.s3.amazonaws.com/index.html
+https://ferndc.s3.dualstack.us-east-1.amazonaws.com/index.svg
