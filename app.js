@@ -2,7 +2,7 @@
 let selectedCategories = [];
 let proxyDataStore = {};
 
-// Handle splash fade sequence and dashboard delivery
+// Handle splash fade sequence, dashboard delivery, and text rotation logic
 window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => {
         const splash = document.getElementById('splash-screen');
@@ -14,11 +14,43 @@ window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => { 
                 mainContent.style.opacity = '1'; 
                 showToast("Welcome to Steezy's Proxy Vault"); 
+                
+                // Initialize the random banner loop once the dashboard reveals
+                initBannerRotation();
             }, 50);
         }, 500);
     }, 1800);
     initApp();
 });
+
+// Announcement Banner Randomizer Loop Engine
+function initBannerRotation() {
+    const banner = document.getElementById('random-banner');
+    if (!banner || !CONFIG.announcements || CONFIG.announcements.length === 0) return;
+
+    // Pick and display an initial random quote instantly
+    let lastIndex = Math.floor(Math.random() * CONFIG.announcements.length);
+    banner.textContent = CONFIG.announcements[lastIndex];
+
+    // Cycle through a new quote every 8 seconds
+    setInterval(() => {
+        banner.style.opacity = '0';
+        banner.style.transform = 'translateY(-2px)';
+
+        setTimeout(() => {
+            let nextIndex;
+            // Prevent picking the exact same text twice in a row if there are options
+            do {
+                nextIndex = Math.floor(Math.random() * CONFIG.announcements.length);
+            } while (nextIndex === lastIndex && CONFIG.announcements.length > 1);
+            
+            lastIndex = nextIndex;
+            banner.textContent = CONFIG.announcements[lastIndex];
+            banner.style.opacity = '1';
+            banner.style.transform = 'translateY(0)';
+        }, 300); // Wait for the fade-out animation before swapping text
+    }, 8000);
+}
 
 // Toast notification dispatch mechanism
 function showToast(message) {
