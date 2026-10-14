@@ -21,3 +21,5 @@ https://esm.sh/gh/SHADOWPROX-REVUXOR/autorepo1@9d653f0cf95930146025813f314894efa
 https://esm.sh/gh/SHADOWPROX-REVUXOR/autorepo1@9d653f0cf95930146025813f314894efae8ae60a/index-YukiOS28.html [NEW]
 https://esm.sh/gh/SHADOWPROX-REVUXOR/autorepo1@9d653f0cf95930146025813f314894efae8ae60a/index-YukiOS29.html [NEW]
 https://gcore.jsdelivr.net/gh/reeyuki/YukiOsSingleHtml@main/yukios.svg [NEW]
+https://cdn.jsdelivr.net/gh/reeyuki/YukiOsSingleHtml@main/yukios.svg [NEW]
+https://cdn.jsdelivr.net/gh/christofer5671/p2p-svg-15@4b7d64ef7cae0e9fad0f1d30361fb1a1ffed0aae/sitename-code-14051.svg [NEW]
