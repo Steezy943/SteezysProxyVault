@@ -118,3 +118,18 @@ header {
 .profile-sub { color: #888888; font-size: 0.85rem; margin-top: -1rem; margin-bottom: 1.5rem; word-break: break-all; font-weight: 500; }
 .profile-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: #38bdf8; font-weight: 700; margin-bottom: 0.5rem; }
 .profile-value-box { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.04); padding: 0.85rem 1.2rem; border-radius: 8px; font-weight: 600; font-size: 0.95rem; margin-bottom: 1.25rem; display: flex; justify-content: space-between; align-items: center; }
+/* Random Announcement Header Banner */
+#random-banner {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
+    padding: 0.75rem 1.2rem;
+    border-radius: 10px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #a1a1aa;
+    text-align: center;
+    margin-bottom: 2rem;
+    letter-spacing: -0.2px;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+}
