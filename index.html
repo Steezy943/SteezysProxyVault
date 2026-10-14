@@ -8,122 +8,126 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            background-color: #000000; color: #ffffff; overflow-x: hidden; min-height: 100vh;
+            background-color: #030303; color: #ffffff; overflow-x: hidden; min-height: 100vh;
         }
         #splash-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #000000;
             display: flex; justify-content: center; align-items: center; z-index: 9999; transition: opacity 0.5s ease;
         }
         #splash-logo {
-            max-width: 300px; width: 80%; opacity: 0; transform: scale(0.9);
+            max-width: 320px; width: 80%; opacity: 0; transform: scale(0.9);
             animation: logoSequence 1.8s forwards ease-in-out;
         }
         @keyframes logoSequence {
             0% { opacity: 0; transform: scale(0.9); }
-            30%, 70% { opacity: 1; transform: scale(1.05); }
-            100% { opacity: 0; transform: scale(0.95); }
+            30%, 70% { opacity: 1; transform: scale(1.03); }
+            100% { opacity: 0; transform: scale(0.97); }
         }
+        #toast-container {
+            position: fixed; top: 1.5rem; right: 1.5rem; display: flex; flex-direction: column;
+            gap: 0.75rem; z-index: 10000; pointer-events: none;
+        }
+        .toast {
+            background: rgba(18, 18, 24, 0.9); border: 1px solid rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); color: #ffffff;
+            padding: 1rem 1.5rem; border-radius: 10px; font-size: 0.9rem; font-weight: 500;
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.7); display: flex; align-items: center;
+            gap: 0.75rem; min-width: 280px; transform: translateX(120%); transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast-icon { width: 8px; height: 8px; border-radius: 50%; background: #38bdf8; }
+        .toast-icon.success { background: #10b981; }
         #main-content {
-            display: none; opacity: 0; transition: opacity 0.8s ease; padding: 2rem; max-width: 1100px; margin: 0 auto;
+            display: none; opacity: 0; transition: opacity 0.8s ease; padding: 2.5rem 2rem; max-width: 1200px; margin: 0 auto;
         }
         header {
             display: flex; justify-content: space-between; align-items: center; padding-bottom: 1.5rem;
-            border-bottom: 1px solid #111111; margin-bottom: 2.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04); margin-bottom: 3rem;
         }
-        .site-title { font-size: 1.4rem; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: #ffffff; }
-        .nav-cluster { display: flex; gap: 1rem; align-items: center; }
+        .site-title { font-size: 1.5rem; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; background: linear-gradient(to right, #ffffff, #888888); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .nav-cluster { display: flex; gap: 0.75rem; align-items: center; background: rgba(255,255,255,0.03); padding: 0.35rem; border-radius: 10px; border: 1px solid rgba(255,255,255,0.04); }
         .nav-btn {
-            background: #09090b; border: 1px solid #1c1c1e; color: #8a8a93; padding: 0.6rem 1.2rem;
-            border-radius: 8px; cursor: pointer; font-size: 0.9rem; font-weight: 500; transition: all 0.2s ease;
+            background: transparent; border: none; color: #71717a; padding: 0.6rem 1.4rem;
+            border-radius: 7px; cursor: pointer; font-size: 0.9rem; font-weight: 600; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .nav-btn:hover { background: #121214; color: #ffffff; }
-        .nav-btn.active { background: #ffffff; color: #000000; border-color: #ffffff; }
+        .nav-btn:hover { color: #ffffff; }
+        .nav-btn.active { background: rgba(255,255,255,0.06); color: #ffffff; box-shadow: 0 4px 12px rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.04); }
         .app-view { display: none; position: relative; }
         .app-view.active { display: block; }
         .control-row {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap;
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; gap: 1rem; flex-wrap: wrap;
         }
-        .view-title { font-size: 1.25rem; text-transform: uppercase; letter-spacing: 1px; color: #f43f5e; }
-        .dropdown-container { position: relative; width: 280px; }
+        .view-title { font-size: 1.3rem; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: #ffffff; }
+        .dropdown-container { position: relative; width: 260px; }
         .dropdown-trigger {
-            background: #09090b; border: 1px solid #1c1c1e; padding: 0.75rem 1rem; width: 100%; border-radius: 8px;
+            background: #0b0b0e; border: 1px solid rgba(255,255,255,0.05); padding: 0.8rem 1.2rem; width: 100%; border-radius: 10px;
             color: #ffffff; text-align: left; cursor: pointer; display: flex; justify-content: space-between;
-            align-items: center; font-size: 0.9rem;
+            align-items: center; font-size: 0.9rem; transition: border-color 0.2s; font-weight: 500;
         }
+        .dropdown-trigger:hover { border-color: rgba(255,255,255,0.15); }
         .dropdown-menu {
-            position: absolute; top: calc(100% + 6px); left: 0; width: 100%; background: #09090b;
-            border: 1px solid #1c1c1e; border-radius: 8px; z-index: 100; max-height: 250px; overflow-y: auto;
-            display: none; padding: 0.5rem; box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+            position: absolute; top: calc(100% + 8px); left: 0; width: 100%; background: #0b0b0e;
+            border: 1px solid rgba(255,255,255,0.06); border-radius: 10px; z-index: 100; max-height: 280px; overflow-y: auto;
+            display: none; padding: 0.5rem; box-shadow: 0 30px 60px rgba(0,0,0,0.8);
         }
         .dropdown-menu.open { display: block; }
         .dropdown-item {
-            display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 6px;
-            cursor: pointer; color: #8a8a93; transition: all 0.15s ease; font-size: 0.9rem;
+            display: flex; align-items: center; gap: 0.75rem; padding: 0.65rem 0.8rem; border-radius: 7px;
+            cursor: pointer; color: #71717a; transition: all 0.15s ease; font-size: 0.9rem; font-weight: 500;
         }
-        .dropdown-item:hover { background: #121214; color: #ffffff; }
+        .dropdown-item:hover { background: rgba(255,255,255,0.03); color: #ffffff; }
         .dropdown-item.selected { color: #ffffff; }
         .checkbox-box {
-            width: 16px; height: 16px; border: 1px solid #2c2c2e; border-radius: 4px; display: flex;
+            width: 16px; height: 16px; border: 1px solid rgba(255,255,255,0.15); border-radius: 4px; display: flex;
             align-items: center; justify-content: center; background: #000; transition: all 0.15s ease;
         }
         .dropdown-item.selected .checkbox-box { background: #ffffff; border-color: #ffffff; }
         .dropdown-item.selected .checkbox-box::after {
             content: ''; width: 4px; height: 8px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); margin-bottom: 2px;
         }
-        .vault-display { background-color: #050505; border: 1px solid #111111; border-radius: 12px; padding: 1.5rem; min-height: 300px; }
-        .proxy-list { list-style: none; display: flex; flex-direction: column; gap: 0.75rem; }
+        .vault-display { background: radial-gradient(ellipse at top, rgba(255,255,255,0.015), transparent), #09090b; border: 1px solid rgba(255,255,255,0.04); border-radius: 16px; padding: 2rem; min-height: 350px; }
+        .proxy-list { list-style: none; display: flex; flex-direction: column; gap: 0.85rem; }
         .proxy-card {
-            background: #09090b; border: 1px solid #161618; padding: 1rem; border-radius: 8px;
-            display: flex; justify-content: space-between; align-items: center; transition: border-color 0.2s ease;
+            background: rgba(255,255,255,0.01); border: 1px solid rgba(255,255,255,0.03); padding: 1.2rem; border-radius: 12px;
+            display: flex; justify-content: space-between; align-items: center; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .proxy-card:hover { border-color: #2c2c2e; }
-        .proxy-meta { display: flex; flex-direction: column; gap: 0.25rem; }
-        .proxy-url { color: #e4e4e7; text-decoration: none; font-size: 0.95rem; word-break: break-all; font-weight: 500; }
+        .proxy-card:hover { border-color: rgba(255,255,255,0.08); background: rgba(255,255,255,0.02); transform: translateY(-1px); }
+        .proxy-meta { display: flex; flex-direction: column; gap: 0.4rem; }
+        .proxy-url-row { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+        .proxy-url { color: #f4f4f5; text-decoration: none; font-size: 1rem; word-break: break-all; font-weight: 600; letter-spacing: -0.3px; }
         .proxy-url:hover { color: #ffffff; text-decoration: underline; }
-        .proxy-tag { font-size: 0.7rem; color: #f43f5e; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(244,63,94,0.1); padding: 0.15rem 0.4rem; border-radius: 4px; width: max-content; }
+        .badge-status { font-size: 0.65rem; font-weight: 700; padding: 0.15rem 0.45rem; border-radius: 5px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-status.new { background: rgba(16,185,129,0.12); color: #34d399; border: 1px solid rgba(16,185,129,0.2); box-shadow: 0 0 12px rgba(16,185,129,0.1); }
+        .badge-status.old { background: rgba(113,113,122,0.15); color: #a1a1aa; border: 1px solid rgba(113,113,122,0.25); }
+        .proxy-badges-row { display: flex; gap: 0.5rem; }
+        .proxy-tag { font-size: 0.7rem; color: #a1a1aa; text-transform: uppercase; letter-spacing: 0.5px; background: rgba(255,255,255,0.04); padding: 0.15rem 0.5rem; border-radius: 5px; border: 1px solid rgba(255,255,255,0.03); width: max-content; }
         .action-btn {
-            background: #161618; border: 1px solid #2c2c2e; color: #ffffff; padding: 0.5rem 1rem;
-            border-radius: 6px; font-size: 0.8rem; cursor: pointer; white-space: nowrap; transition: all 0.2s ease;
+            background: #141419; border: 1px solid rgba(255,255,255,0.05); color: #e4e4e7; padding: 0.6rem 1.2rem;
+            border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; white-space: nowrap; transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
         }
-        .action-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; }
-        .checker-panel { display: flex; flex-direction: column; gap: 1.5rem; }
-        .checker-input-row { display: flex; gap: 0.75rem; width: 100%; }
-        .checker-input {
-            flex: 1; background: #09090b; border: 1px solid #1c1c1e; color: #ffffff; padding: 0.75rem 1rem;
-            border-radius: 8px; font-size: 0.95rem; outline: none; transition: border-color 0.2s ease;
-        }
-        .checker-input:focus { border-color: #2c2c2e; }
-        .checker-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.75rem; margin-top: 0.5rem; }
-        .blocker-status-card {
-            background: #09090b; border: 1px solid #161618; padding: 0.85rem 1rem; border-radius: 8px;
-            display: flex; justify-content: space-between; align-items: center;
-        }
-        .blocker-name { font-size: 0.9rem; color: #e4e4e7; font-weight: 500; }
-        .status-badge { font-size: 0.85rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
-        .status-clear { color: #10b981; }
-        .status-blocked { color: #ef4444; }
-        .status-idle { color: #52525b; }
+        .action-btn:hover { background: #ffffff; color: #000000; border-color: #ffffff; box-shadow: 0 10px 20px -10px rgba(255,255,255,0.3); }
         .blur-overlay {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.65); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-            display: flex; justify-content: center; align-items: center; border-radius: 12px; z-index: 10;
+            background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+            display: flex; justify-content: center; align-items: center; border-radius: 16px; z-index: 10;
         }
         .coming-soon-badge {
-            background: #111111; border: 1px solid #222222; padding: 1rem 2.5rem; border-radius: 12px;
-            color: #ffffff; font-size: 1.5rem; font-weight: 700; text-transform: uppercase;
-            letter-spacing: 3px; box-shadow: 0 10px 30px rgba(0,0,0,0.7); animation: pulseText 2s infinite ease-in-out;
+            background: #09090b; border: 1px solid rgba(255,255,255,0.06); padding: 1.2rem 3rem; border-radius: 14px;
+            color: #ffffff; font-size: 1.3rem; font-weight: 800; text-transform: uppercase;
+            letter-spacing: 4px; box-shadow: 0 30px 60px rgba(0,0,0,0.8); animation: pulseText 2s infinite ease-in-out;
         }
         @keyframes pulseText {
-            0%, 100% { opacity: 0.7; transform: scale(0.98); }
-            50% { opacity: 1; transform: scale(1.02); }
+            0%, 100% { opacity: 0.6; transform: scale(0.97); }
+            50% { opacity: 1; transform: scale(1.03); }
         }
     </style>
 </head>
 <body>
+    <div id="toast-container"></div>
     <div id="splash-screen"><img id="splash-logo" src="SiteLogo.png" alt="Logo"></div>
     <div id="main-content">
         <header>
-            <div class="site-title">Steezy's Proxy Vault</div>
+            <div class="site-title">Steezy's Vault</div>
             <div class="nav-cluster">
                 <button class="nav-btn active" onclick="switchView('vault', this)">Proxies</button>
                 <button class="nav-btn" onclick="switchView('checker', this)">Check Links</button>
@@ -134,7 +138,7 @@
                 <h2 class="view-title">Network Index</h2>
                 <div class="dropdown-container">
                     <button class="dropdown-trigger" id="filter-trigger" onclick="toggleDropdown(event)">
-                        <span>Filter Categories</span> <span style="font-size:0.7rem;">▼</span>
+                        <span>Filter Categories</span> <span style="font-size:0.6rem; opacity:0.5;">▼</span>
                     </button>
                     <div class="dropdown-menu" id="filter-menu"></div>
                 </div>
@@ -143,30 +147,14 @@
         </div>
         <div id="checker-view" class="app-view">
             <div class="blur-overlay"><div class="coming-soon-badge">Coming Soon</div></div>
-            <div class="vault-display">
-                <div class="checker-panel">
-                    <div>
-                        <h2 class="view-title" style="margin-bottom:0.25rem;">Live Filter Diagnostics</h2>
-                        <p style="color:#8a8a93; font-size:0.85rem;">Input target proxy URL to perform network connection handshake tests.</p>
-                    </div>
-                    <div class="checker-input-row">
-                        <input type="text" class="checker-input" id="target-url" placeholder="https://example.com">
-                        <button class="action-btn" style="padding:0.75rem 1.5rem;" onclick="runDiagnostics()">Scan URL</button>
-                    </div>
-                    <div class="checker-grid" id="blocker-grid-target"></div>
-                </div>
-            </div>
+            <div class="vault-display"></div>
         </div>
     </div>
     <script>
-        let categories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Truffled", "Tundra", "Cobra"];
-        const blockers = [
-            "Securly", "Aristotle", "Barracuda", "Blocksi", "Blocksi AI", "Deledao", 
-            "Fortiguard", "Goguardian", "Lightspeed", "Linewize", "Qustodio", "Senso", 
-            "Sophos", "Cisco", "Dnsfilter", "Iboss", "ContentKeeper", "LanSchool"
-        ];
+        let categories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Truffled", "Tundra"];
         let proxyDataStore = {}; 
-        let selectedCategories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Truffled", "Tundra", "Cobra"];
+        let selectedCategories = ["Aether", "Cherri", "DakNux", "DayDreamX", "Fern", "Gn-Math", "Nocturne", "PeteZah", "Synapse", "Truffled", "Tundra"];
+
         window.addEventListener('DOMContentLoaded', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -175,27 +163,35 @@
                 setTimeout(() => {
                     splash.style.display = 'none'; 
                     mainContent.style.display = 'block';
-                    setTimeout(() => { mainContent.style.opacity = '1'; }, 50);
+                    setTimeout(() => { mainContent.style.opacity = '1'; showToast('Welcome to Steezy\'s Proxy Vault', false); }, 50);
                 }, 500);
             }, 1800);
             initApp();
         });
 
+        function showToast(message, isSuccess = true) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<div class="toast-icon ${isSuccess ? 'success' : ''}"></div><span>${message}</span>`;
+            container.appendChild(toast);
+            setTimeout(() => toast.classList.add('show'), 50);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 400);
+            }, 3000);
+        }
+
         async function initApp() {
-            buildFilterMenu(); 
-            buildBlockerGrid();
+            buildFilterMenu();
             for (let cat of categories) {
                 try {
                     const response = await fetch(`categories/${cat}.txt`);
                     if (response.ok) {
                         const rawText = await response.text();
                         proxyDataStore[cat] = rawText.split('\n').map(l => l.trim()).filter(l => l.length > 0);
-                    } else { 
-                        proxyDataStore[cat] = []; 
-                    }
-                } catch (e) { 
-                    proxyDataStore[cat] = []; 
-                }
+                    } else { proxyDataStore[cat] = []; }
+                } catch (e) { proxyDataStore[cat] = []; }
             }
             renderProxies();
         }
@@ -229,48 +225,37 @@
             let compiledLinks = [];
             selectedCategories.forEach(cat => {
                 const links = proxyDataStore[cat] || [];
-                links.forEach(url => { compiledLinks.push({ url, cat }); });
+                links.forEach(rawLine => {
+                    let statusTag = '';
+                    let cleanUrl = rawLine;
+                    if (rawLine.toLowerCase().includes('[new]')) {
+                        statusTag = 'new';
+                        cleanUrl = rawLine.replace(/\[new\]/i, '').trim();
+                    } else if (rawLine.toLowerCase().includes('[old]')) {
+                        statusTag = 'old';
+                        cleanUrl = rawLine.replace(/\[old\]/i, '').trim();
+                    }
+                    compiledLinks.push({ url: cleanUrl, status: statusTag, cat: cat });
+                });
             });
             if (compiledLinks.length === 0) {
-                listTarget.innerHTML = `<li style="color: #52525b; font-size: 0.9rem; text-align:center; padding:2rem;">No active nodes found matching current filters.</li>`;
+                listTarget.innerHTML = `<li style="color: #71717a; font-size: 0.9rem; text-align:center; padding:3rem; font-weight:500;">No active elements found matching selected filters.</li>`;
                 return;
             }
             compiledLinks.forEach(item => {
                 const li = document.createElement('li'); li.className = 'proxy-card';
-                li.innerHTML = `<div class="proxy-meta"><a class="proxy-url" href="${item.url}" target="_blank">${item.url}</a><span class="proxy-tag">${item.cat}</span></div><button class="action-btn" onclick="copyToClipboard('${item.url}', this)">Copy</button>`;
+                let statusBadgeHtml = item.status ? `<span class="badge-status ${item.status}">${item.status}</span>` : '';
+                li.innerHTML = `
+                    <div class="proxy-meta">
+                        <div class="proxy-url-row">
+                            <a class="proxy-url" href="${item.url}" target="_blank">${item.url}</a>
+                            ${statusBadgeHtml}
+                        </div>
+                        <div class="proxy-badges-row"><span class="proxy-tag">${item.cat}</span></div>
+                    </div>
+                    <button class="action-btn" onclick="copyToClipboard('${item.url}', this)">Copy Link</button>
+                `;
                 listTarget.appendChild(li);
-            });
-        }
-
-        function buildBlockerGrid() {
-            const target = document.getElementById('blocker-grid-target'); target.innerHTML = '';
-            blockers.forEach(b => {
-                const div = document.createElement('div'); div.className = 'blocker-status-card';
-                div.innerHTML = `<span class="blocker-name">${b}</span><span class="status-badge status-idle" id="status-${b.replace(/\s+/g, '')}">--</span>`;
-                target.appendChild(div);
-            });
-        }
-
-        async function runDiagnostics() {
-            let url = document.getElementById('target-url').value.trim();
-            if (!url) { alert('Please supply a target URL interface to parse.'); return; }
-            if (!/^https?:\/\//i.test(url)) { url = 'https://' + url; }
-            blockers.forEach(b => {
-                const elementId = `status-${b.replace(/\s+/g, '')}`; const badge = document.getElementById(elementId);
-                badge.className = 'status-badge status-idle'; badge.textContent = 'Testing...';
-            });
-            const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 4500);
-            try {
-                await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal, cache: 'no-store' });
-                clearTimeout(timeoutId); updateAllBlockers(false);
-            } catch (err) { clearTimeout(timeoutId); updateAllBlockers(true); }
-        }
-
-        function updateAllBlockers(isRequestBlocked) {
-            blockers.forEach(b => {
-                const elementId = `status-${b.replace(/\s+/g, '')}`; const badge = document.getElementById(elementId);
-                if (isRequestBlocked) { badge.className = 'status-badge status-blocked'; badge.innerHTML = '✕ Blocked'; }
-                else { badge.className = 'status-badge status-clear'; badge.innerHTML = '✓ Clear'; }
             });
         }
 
@@ -278,10 +263,12 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
             document.querySelectorAll('.app-view').forEach(v => v.classList.remove('active'));
             element.classList.add('active'); document.getElementById(`${viewName}-view`).classList.add('active');
+            showToast(`Switched view to ${element.textContent}`);
         }
 
         function copyToClipboard(text, element) {
             navigator.clipboard.writeText(text).then(() => {
+                showToast('Link copied successfully!');
                 const orig = element.textContent; element.textContent = 'Copied!';
                 element.style.background = '#ffffff'; element.style.color = '#000000';
                 setTimeout(() => { element.textContent = orig; element.style.background = ''; element.style.color = ''; }, 1000);
