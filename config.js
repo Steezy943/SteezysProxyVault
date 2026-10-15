@@ -13,7 +13,7 @@ const CONFIG = {
         rammerhead: ["cherri", "fern", "truffled", "cloudmoon"]
     },
 
-    // Your exact collection of custom messages
+    // Your collection of custom text announcements
     announcements: [
         "Pray I do not find you - Ruben Sim",
         "This site updates with new proxy's almost every weekday!",
@@ -22,5 +22,12 @@ const CONFIG = {
         "Did you know Abraham Lincoln looks like a minecraft skeleton because of how skinny he is?",
         "Schoolwork is overrated",
         "I'm in the KKK! Kool Kids Klub!"
+    ],
+
+    // Active tracking list for diagnostics checker panel definitions
+    blockers: [
+        "Securly", "Aristotle", "Barracuda", "Blocksi", "Blocksi AI", "Deledao", 
+        "Fortiguard", "Goguardian", "Lightspeed", "Linewize", "Qustodio", "Senso", 
+        "Sophos", "Cisco", "Dnsfilter", "Iboss", "ContentKeeper", "LanSchool"
     ]
 };
