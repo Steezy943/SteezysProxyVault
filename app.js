@@ -49,7 +49,6 @@ function changeWorkspaceView(viewMode) {
         if (tab) tab.classList.add('active');
         if (pane) pane.classList.add('active');
     } else if (viewMode === 'checker') {
-        // Triggers the aesthetic warning notification but successfully reveals the clean layout
         showToast("This feature is still work in progress, expect changes.");
         const tab = document.getElementById('nav-tab-checker');
         const pane = document.getElementById('workspace-checker');
@@ -57,6 +56,27 @@ function changeWorkspaceView(viewMode) {
         if (pane) pane.classList.add('active');
         executeBlockerGridBuild();
     }
+}
+
+// Advanced About:Blank Window Cloaking Script Engine
+function launchAboutBlank(url) {
+    if (!url) return;
+    const targetWin = window.open('about:blank', '_blank');
+    if (!targetWin) {
+        showToast("Popup blocked! Enable permissions to use cloaked frames.");
+        return;
+    }
+    targetWin.document.body.style.margin = '0';
+    targetWin.document.body.style.height = '100vh';
+    
+    const iframe = targetWin.document.createElement('iframe');
+    iframe.src = url;
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = 'none';
+    iframe.style.outline = 'none';
+    
+    targetWin.document.body.appendChild(iframe);
 }
 
 // Banner Announcement Randomizer Loop Engine
@@ -122,7 +142,6 @@ function toggleFilterSelection(cat) {
     renderProxies();
 }
 
-// Reset filtering parameters instantly
 function resetFiltersAction() {
     selectedCategories = [];
     CONFIG.categories.forEach(cat => {
@@ -204,7 +223,10 @@ function renderProxies() {
                 </div>
                 <div class="proxy-badges-row"><span class="proxy-tag">${item.cat}</span></div>
             </div>
-            <button class="action-btn" onclick="event.stopPropagation(); copyToClipboard('${item.url}', this)">Copy Link</button>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button class="action-btn-secondary" style="padding: 0.55rem 1rem;" onclick="event.stopPropagation(); launchAboutBlank('${item.url}')">Blank Tab</button>
+                <button class="action-btn" onclick="event.stopPropagation(); copyToClipboard('${item.url}', this)">Copy</button>
+            </div>
         `;
         listTarget.appendChild(li);
     });
