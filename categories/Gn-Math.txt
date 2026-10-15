@@ -1,1 +1,2 @@
-https://quizizz-static.s3-accelerate.amazonaws.com/_media/uploadedFiles/013955bd-b5cb-42d5-8655-a09c290a4033-v2 [OLD]
+https://cdn.jsdelivr.net/gh/stockable/sites@main/gnmath.svg [NEW]
+https://cdn.hcbrands.com/media/hsc/pce/uploadedImage/9krqqttss7agk2u2v874l5bt2c/03a09b979553ecb2324fgnmath.svg [NEW]
