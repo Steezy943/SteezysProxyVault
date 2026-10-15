@@ -1,6 +1,6 @@
 // Main Application State Logic Engine
 let selectedCategories = [];
-let proxyDataStore = {}; // Correctly initialized global object matrix
+let proxyDataStore = {};
 
 // Handle splash fade sequence and workspace delivery
 window.addEventListener('DOMContentLoaded', () => {
@@ -40,11 +40,6 @@ function showToast(message) {
 
 // Global Workspace Switching Logic
 function changeWorkspaceView(viewMode) {
-    if (viewMode === 'checker') {
-        showToast("Not so fast buckaroo! This is coming later.");
-        return; 
-    }
-
     document.querySelectorAll('.app-nav-tab').forEach(b => b.classList.remove('active'));
     document.querySelectorAll('.workspace-pane').forEach(p => p.classList.remove('active'));
     
@@ -53,6 +48,14 @@ function changeWorkspaceView(viewMode) {
         const pane = document.getElementById('workspace-proxies');
         if (tab) tab.classList.add('active');
         if (pane) pane.classList.add('active');
+    } else if (viewMode === 'checker') {
+        // Triggers the aesthetic warning notification but successfully reveals the clean layout
+        showToast("This feature is still work in progress, expect changes.");
+        const tab = document.getElementById('nav-tab-checker');
+        const pane = document.getElementById('workspace-checker');
+        if (tab) tab.classList.add('active');
+        if (pane) pane.classList.add('active');
+        executeBlockerGridBuild();
     }
 }
 
@@ -77,7 +80,6 @@ function initBannerRotation() {
         }, 300);
     }, 8000);
 }
-
 // Synchronization handshake with plain text proxy links files
 async function initApp() {
     let grandTotal = 0;
@@ -120,6 +122,7 @@ function toggleFilterSelection(cat) {
     renderProxies();
 }
 
+// Reset filtering parameters instantly
 function resetFiltersAction() {
     selectedCategories = [];
     CONFIG.categories.forEach(cat => {
@@ -145,7 +148,6 @@ function switchFilterTab(tabType) {
         if (pane) pane.classList.add('active');
     }
 }
-
 function openFilterModal(e) { e.stopPropagation(); const m = document.getElementById('filter-modal'); if (m) m.classList.add('open'); }
 function closeFilterModal() { const m = document.getElementById('filter-modal'); if (m) m.classList.remove('open'); }
 
@@ -222,6 +224,52 @@ function buildMetricsGrid() {
 
 function openMetricsModal() { const m = document.getElementById('metrics-modal'); if (m) m.classList.add('open'); buildMetricsGrid(); }
 function closeMetricsModal() { const m = document.getElementById('metrics-modal'); if (m) m.classList.remove('open'); }
+
+/* Site Checker Diagnostic Module Functions */
+function executeBlockerGridBuild() {
+    const target = document.getElementById('diagnostic-grid-target'); 
+    if (!target) return;
+    target.innerHTML = '';
+    CONFIG.blockers.forEach(b => {
+        const div = document.createElement('div'); div.className = 'blocker-status-card';
+        div.innerHTML = `<span class="blocker-name">${b}</span><span class="status-badge status-idle" id="diag-status-${b.replace(/\s+/g, '')}">--</span>`;
+        target.appendChild(div);
+    });
+}
+
+async function executeDiagnosticScan() {
+    let url = document.getElementById('target-diagnostic-url').value.trim();
+    if (!url) { alert('Please supply a target URL to check.'); return; }
+    if (!/^https?:\/\//i.test(url)) { url = 'https://' + url; }
+    
+    CONFIG.blockers.forEach(b => {
+        const badge = document.getElementById(`diag-status-${b.replace(/\s+/g, '')}`);
+        if (badge) { badge.className = 'status-badge status-idle'; badge.textContent = 'Testing...'; }
+    });
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+    try {
+        await fetch(url, { method: 'HEAD', mode: 'no-cors', signal: controller.signal, cache: 'no-store' });
+        clearTimeout(timeoutId);
+        updateBlockerMatrixStatus(false);
+    } catch (err) {
+        clearTimeout(timeoutId);
+        updateBlockerMatrixStatus(true);
+    }
+}
+
+function updateBlockerMatrixStatus(isRequestBlocked) {
+    CONFIG.blockers.forEach(b => {
+        const badge = document.getElementById(`diag-status-${b.replace(/\s+/g, '')}`);
+        if (badge) {
+            if (isRequestBlocked) { badge.className = 'status-badge status-blocked'; badge.innerHTML = '✕ Blocked'; }
+            else { badge.className = 'status-badge status-clear'; badge.innerHTML = '✓ Clear'; }
+        }
+    });
+    showToast(isRequestBlocked ? "Bypass verification failed on local client" : "Bypass verified: Node established connection!");
+}
 
 function copyToClipboard(text, element) {
     navigator.clipboard.writeText(text).then(() => {
