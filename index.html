@@ -4,25 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Steezy's Proxy Vault</title>
-    
-    <!-- ADDED: Favicon Icon Tab Asset Link -->
     <link rel="icon" type="image/png" href="SiteLogo.png">
-
-    <!-- Linking external modular assets -->
     <link rel="stylesheet" href="styles.css">
     <script src="config.js" defer></script>
     <script src="app.js" defer></script>
 </head>
 <body>
-    <!-- 1. Toast Notification Container -->
+    <!-- Global Toast Canvas Notifications -->
     <div id="toast-container"></div>
 
-    <!-- 2. Animated Entry Splash Screen -->
+    <!-- Animated Smooth Entry Splash Screen -->
     <div id="splash-screen">
         <img id="splash-logo" src="SiteLogo.png" alt="Steezy's Vault Logo">
     </div>
     
-    <!-- 3. Composition Breakdown Modal -->
+    <!-- Vault Distribution metrics Breakdown Modal -->
     <div class="modal-mask" id="metrics-modal" onclick="closeMetricsModal()">
         <div class="modal-box" onclick="event.stopPropagation()">
             <div class="modal-header">
@@ -33,11 +29,11 @@
         </div>
     </div>
 
-    <!-- 4. Live Proxy Inspector Details Card Popup -->
+    <!-- Proxy Parameter Inspector Details Drawer -->
     <div class="modal-mask" id="profile-modal" onclick="closeProfileModal()">
         <div class="modal-box" onclick="event.stopPropagation()">
             <div class="modal-header" style="margin-bottom: 1rem;">
-                <h3 class="modal-title">Proxy Information</h3>
+                <h3 class="modal-title">Proxy Profile Details</h3>
                 <button class="modal-close-btn" onclick="closeProfileModal()">✕</button>
             </div>
             <div class="profile-sub" id="prof-url-text">https://target-domain.org</div>
@@ -50,17 +46,17 @@
             
             <div class="profile-label">Encryption Profile</div>
             <div class="profile-value-box" style="margin-bottom:0;">
-                <span>XHR-Bypass Handshake v2</span>
-                <span style="font-size:0.75rem; color:#10b981; font-weight:bold;">Active</span>
+                <span>TLS Shadow-Handshake v4</span>
+                <span class="pulse-indicator-green">Active</span>
             </div>
         </div>
     </div>
 
-    <!-- 5. Custom Advanced Filter Popup Modal Container -->
+    <!-- Advanced Filter Engine Configuration Drawer -->
     <div class="modal-mask" id="filter-modal" onclick="closeFilterModal()">
         <div class="modal-box" onclick="event.stopPropagation()">
             <div class="modal-header">
-                <h3 class="modal-title">Filter Engine</h3>
+                <h3 class="modal-title">Filter Engine Tuning</h3>
                 <button class="modal-close-btn" onclick="closeFilterModal()">✕</button>
             </div>
             
@@ -75,41 +71,69 @@
             
             <div class="filter-view-pane" id="pane-filter-block">
                 <div class="frosted-blur-pane">
-                    <div class="cs-tag">Coming Soon</div>
+                    <div class="cs-tag">COMING SOON</div>
                 </div>
             </div>
             
             <div class="filter-footer-actions">
-                <button class="action-btn" style="background:transparent; border-color:transparent; color:#71717a;" onclick="resetFiltersAction()">Reset All</button>
+                <button class="action-btn-secondary" onclick="resetFiltersAction()">Reset All</button>
                 <button class="action-btn" onclick="closeFilterModal()">Apply Parameters</button>
             </div>
         </div>
     </div>
 
-    <!-- 6. Main Dashboard Interface Content Canvas -->
+    <!-- Main Workspace Application Engine -->
     <div id="main-content">
-        <!-- Random Announcement Text Banner Display -->
-        <div id="random-banner">Loading announcement...</div>
+        <!-- Interactive Fading Announcement Badge -->
+        <div id="random-banner">Loading network broadcasts...</div>
 
         <header>
-            <div class="site-title">Steezy's Vault</div>
+            <div class="logo-group">
+                <img src="SiteLogo.png" alt="Icon" class="nav-favicon-img" onerror="this.style.display='none'">
+                <div class="site-title">Steezy's Proxy Vault</div>
+            </div>
+            <div class="app-navigation-dock">
+                <button class="app-nav-tab active" id="nav-tab-proxies" onclick="changeWorkspaceView('proxies')">Proxies</button>
+                <button class="app-nav-tab" id="nav-tab-checker" onclick="changeWorkspaceView('checker')">Site Checker</button>
+            </div>
         </header>
-        <div id="vault-view" class="app-view active">
+
+        <!-- WORKSPACE VIEW 1: PROXIES FEED -->
+        <main id="workspace-proxies" class="workspace-pane active">
             <div class="control-row">
                 <div class="view-title-group">
                     <h2 class="view-title">Network Index</h2>
-                    <div class="total-counter-text" id="global-total-counter" onclick="openMetricsModal()">Loading metrics...</div>
+                    <div class="total-counter-text" id="global-total-counter" onclick="openMetricsModal()">Loading active nodes...</div>
                 </div>
                 <div class="dropdown-container">
                     <button class="dropdown-trigger" onclick="openFilterModal(event)">
-                        <span>Filter Categories</span> <span style="font-size:0.6rem; opacity:0.5;">▼</span>
+                        <span>Filter Categories</span> <span style="font-size:0.6rem; opacity:0.4;">▼</span>
                     </button>
                 </div>
             </div>
             <div class="vault-display">
                 <ul class="proxy-list" id="proxy-list-target"></ul>
             </div>
-        </div>
+        </main>
+
+        <!-- WORKSPACE VIEW 2: ACTIVE DIAGNOSTICS SITE CHECKER -->
+        <main id="workspace-checker" class="workspace-pane">
+            <div class="control-row">
+                <div class="view-title-group">
+                    <h2 class="view-title">Filter Bypass Diagnostics</h2>
+                    <p class="section-desc-text">Perform sandbox connection tests to detect school filter overrides.</p>
+                </div>
+            </div>
+            <div class="vault-display">
+                <div class="checker-dashboard-panel">
+                    <div class="checker-input-wrapper">
+                        <input type="text" class="checker-input-box" id="target-diagnostic-url" placeholder="Paste proxy link here to test connection (e.g. https://example.com)...">
+                        <button class="action-btn" style="height: 46px; padding: 0 1.75rem;" onclick="executeDiagnosticScan()">Scan Node</button>
+                    </div>
+                    <div class="blocker-matrix-grid" id="diagnostic-grid-target"></div>
+                </div>
+            </div>
+        </main>
     </div>
 </body>
 </html>
